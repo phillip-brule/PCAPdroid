@@ -71,6 +71,8 @@ public class Prefs {
     public static final String PREF_CAPTURE_INTERFACE = "capture_interface";
     public static final String PREF_MALWARE_DETECTION = "malware_detection";
     public static final String PREF_FIREWALL = "firewall";
+    public static final String PREF_SIMPLE_BLOCK_PORT80 = "simple_block_port80";
+    public static final String PREF_SIMPLE_BLOCK_ALIBABA = "simple_block_alibaba";
     public static final String PREF_TLS_DECRYPTION_KEY = "tls_decryption";
     public static final String PREF_APP_FILTER = "app_filter";
     public static final String PREF_APP_FILTER_ENABLED = "app_filter_enabled";
@@ -267,6 +269,8 @@ public class Prefs {
     public static boolean isPrivateDnsBlockingEnabled(SharedPreferences p) { return(p.getBoolean(PREF_AUTO_BLOCK_PRIVATE_DNS, true)); }
     public static boolean lockdownVpnNoticeShown(SharedPreferences p)      { return(p.getBoolean(PREF_LOCKDOWN_VPN_NOTICE_SHOWN, false)); }
     public static boolean blockNewApps(SharedPreferences p)       { return(p.getBoolean(PREF_BLOCK_NEW_APPS, false)); }
+    public static boolean blockOutgoingPort80(SharedPreferences p) { return(p.getBoolean(PREF_SIMPLE_BLOCK_PORT80, false)); }
+    public static boolean blockAlibabaDns(SharedPreferences p)     { return(p.getBoolean(PREF_SIMPLE_BLOCK_ALIBABA, false)); }
     public static boolean isFirewallWhitelistMode(SharedPreferences p)     { return(p.getBoolean(PREF_FIREWALL_WHITELIST_MODE, false)); }
     public static boolean isFirewallWhitelistInitialized(SharedPreferences p) { return(p.getInt(PREF_FIREWALL_WHITELIST_INIT_VER, 0) == FIREWALL_WHITELIST_INIT_VER); }
     public static String getMitmproxyOpts(SharedPreferences p)    { return(p.getString(PREF_MITMPROXY_OPTS, "")); }

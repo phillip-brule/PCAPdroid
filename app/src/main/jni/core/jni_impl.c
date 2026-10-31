@@ -881,6 +881,20 @@ Java_com_emanuelef_remote_1capture_CaptureService_setPrivateDnsBlocked(JNIEnv *e
 /* ******************************************************* */
 
 JNIEXPORT void JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_setSimpleBlockPort80(JNIEnv *env, jclass clazz, jboolean to_block) {
+    simple_block_port80 = to_block;
+}
+
+/* ******************************************************* */
+
+JNIEXPORT void JNICALL
+Java_com_emanuelef_remote_1capture_CaptureService_setSimpleBlockAlibaba(JNIEnv *env, jclass clazz, jboolean to_block) {
+    simple_block_alibaba = to_block;
+}
+
+/* ******************************************************* */
+
+JNIEXPORT void JNICALL
 Java_com_emanuelef_remote_1capture_CaptureService_addPortMapping(JNIEnv *env, jclass clazz, jint ipproto,
                                                                  jint orig_port, jint redirect_port, jstring redirect_ip) {
     zdtun_ip_t ip;

@@ -21,6 +21,7 @@
 #include <netinet/udp.h>
 
 #include "pcapdroid.h"
+#include "boyer_moore.h"
 #include "common/utils.h"
 #include "port_map.h"
 
@@ -553,8 +554,24 @@ int run_vpn(pcapdroid_t *pd) {
                 pkt_context_t pctx;
                 pd_conn_t *data = zdtun_conn_get_userdata(conn);
 
+                if(simple_block_port80 && !data->to_block &&
+                        ((tuple->ipproto == IPPROTO_TCP) || (tuple->ipproto == IPPROTO_UDP)) &&
+                        (ntohs(tuple->dst_port) == 80)) {
+                    char buf[256];
+                    data->to_block = true;
+                    data->blacklisted_internal = true;
+                    log_d("Blocked port 80: %s", zdtun_5tuple2str(tuple, buf, sizeof(buf)));
+                } else if(simple_block_alibaba && !data->to_block && data->info && data->info[0] &&
+                        boyer_moore_contains_ci(data->info, "alibaba")) {
+                    char buf[256];
+                    data->blacklisted_domain = true;
+                    data->to_block = true;
+                    log_d("Blocked DNS name containing alibaba [%s]: %s", data->info,
+                          zdtun_5tuple2str(tuple, buf, sizeof(buf)));
+                }
+
                 // To be run before pd_process_packet/process_payload
-                if(data->sent_pkts == 0) {
+                if((data->sent_pkts == 0) && !data->to_block) {
                     if(pd_check_port_map(conn, data->uid))
                         data->port_mapping_applied = true;
                     else if(should_proxify(pd, tuple, data)) {

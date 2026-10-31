@@ -1320,6 +1320,7 @@ public class CaptureService extends VpnService implements Runnable {
                 mHandler.post(() -> Utils.showToast(this, success ? R.string.permission_granted : R.string.permission_grant_fail, "INTERACT_ACROSS_USERS"));
             }
 
+            applySimpleBlocksFromPrefs();
             runPacketLoop(-1, this, Build.VERSION.SDK_INT);
         } else {
             if(mParcelFileDescriptor != null) {
@@ -1328,6 +1329,7 @@ public class CaptureService extends VpnService implements Runnable {
 
                 if((fd > 0) && (fd < fd_setsize)) {
                     Log.d(TAG, "VPN fd: " + fd + " - FD_SETSIZE: " + fd_setsize);
+                    applySimpleBlocksFromPrefs();
                     runPacketLoop(fd, this, Build.VERSION.SDK_INT);
 
                     // if always-on VPN is stopped, it's not an always-on anymore
@@ -1944,6 +1946,16 @@ public class CaptureService extends VpnService implements Runnable {
     private static native void stopPacketLoop();
     private static native int getFdSetSize();
     private static native void setPrivateDnsBlocked(boolean to_block);
+    private static native void setSimpleBlockPort80(boolean to_block);
+    private static native void setSimpleBlockAlibaba(boolean to_block);
+
+    public static void applySimpleBlocksFromPrefs() {
+        if((INSTANCE == null) || !NATIVE_LIB_LOADED)
+            return;
+
+        setSimpleBlockPort80(Prefs.blockOutgoingPort80(INSTANCE.mPrefs));
+        setSimpleBlockAlibaba(Prefs.blockAlibabaDns(INSTANCE.mPrefs));
+    }
     private static native void setDnsServer(String server);
     private static native void addPortMapping(int ipproto, int orig_port, int redirect_port, String redirect_ip);
     private static native void setPortMappingExemptions(int[] uids);

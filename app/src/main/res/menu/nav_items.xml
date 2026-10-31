@@ -18,6 +18,10 @@
             android:title="@string/firewall"
             android:icon="@drawable/ic_shield" />
         <item
+            android:id="@+id/simple_blocks"
+            android:title="@string/simple_block"
+            android:icon="@drawable/ic_shield" />
+        <item
             android:id="@+id/malware_detection"
             android:title="@string/malware_detection"
             android:icon="@drawable/ic_bug" />

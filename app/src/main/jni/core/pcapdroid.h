@@ -413,6 +413,8 @@ extern jni_enum_t enums;
 extern bool running;
 extern uint32_t new_dns_server;
 extern bool block_private_dns;
+extern bool simple_block_port80;
+extern bool simple_block_alibaba;
 extern bool dump_capture_stats_now;
 extern bool reload_blacklists_now;
 extern bool has_seen_dump_extensions;

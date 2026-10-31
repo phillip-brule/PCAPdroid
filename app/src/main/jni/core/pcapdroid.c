@@ -21,6 +21,7 @@
 #include <assert.h> // NOTE: look for "assertion" in logcat
 #include <pthread.h>
 #include "pcapdroid.h"
+#include "boyer_moore.h"
 #include "pcap_dump.h"
 #include "common/utils.h"
 #include "pcapd/pcapd.h"
@@ -36,6 +37,8 @@ extern void vpn_process_ndpi(pcapdroid_t *pd, const zdtun_5tuple_t *tuple, pd_co
 bool running = false;
 uint32_t new_dns_server = 0;
 bool block_private_dns = false;
+bool simple_block_port80 = false;
+bool simple_block_alibaba = false;
 bool has_seen_dump_extensions = false;
 
 bool dump_capture_stats_now = false;
@@ -500,6 +503,15 @@ static bool firewall_app_allowlisted(pcapdroid_t *pd, const zdtun_5tuple_t *tupl
 /* ******************************************************* */
 
 static void check_domain_block_rules(pcapdroid_t *pd, pd_conn_t *data, const zdtun_5tuple_t *tuple) {
+    if(simple_block_alibaba && data->info && data->info[0] && !data->to_block &&
+            boyer_moore_contains_ci(data->info, "alibaba")) {
+        char buf[512];
+        data->blacklisted_domain = true;
+        data->to_block = true;
+        log_d("Blocked DNS name containing alibaba [%s]: %s", data->info,
+              zdtun_5tuple2str(tuple, buf, sizeof(buf)));
+    }
+
     if(data->info && data->info[0]) {
         if(pd->malware_detection.bl && !data->blacklisted_domain && !data->whitelisted_app) {
             bool blacklisted = blacklist_match_domain(pd->malware_detection.bl, data->info);
